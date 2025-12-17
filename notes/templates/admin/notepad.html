@@ -1,0 +1,118 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Notepad Dashboard{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'notes/css/style_notes.css' %}">     
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-stats">
+    <div class="stat-card blue">
+        <h3>Notatki z tytułem</h3>
+        <div class="number">{{ title_notes_count|default:0 }}</div>
+        <p>Notatki z tytułem</p>
+    </div>
+    <div class="stat-card green">
+        <h3>Notatki z treścią</h3>
+        <div class="number">{{ content_notes_count|default:0 }}</div>
+        <p>Notatki z treścią</p>
+    </div>
+    <div class="stat-card orange">
+        <h3>Notatki z danycmi JSON</h3>
+        <div class="number">{{ data_notes_count|default:0 }}</div>
+        <p>Notatki z danymi JSON</p>
+    </div>
+</div>
+
+<div class="recent-notes">
+    <h2>Ostatnie notatki</h2>
+    {% if recent_notes %}
+        {% for item in recent_notes %}
+        <div class="note-item">
+            <div>
+                <div class="note-title">{{ item.note }}</div>
+                <div class="note-date">Utworzono: {{ item.note.created_at|date:"d.m.Y H:i" }}</div>
+            </div>
+            <a href="{% url 'note_detail' item.note.id %}" class="button">Zobacz</a>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>Brak notatek. Dodaj pierwszą notatkę w panelu administracyjnym!</p>
+    {% endif %}
+</div>
+
+<div style="margin-top: 30px;">
+    <h2>Dodaj nową notatkę</h2>
+    
+    {% if messages %}
+        {% for message in messages %}
+        <div style="padding: 10px; margin: 10px 0; background: #d4edda; color: #155724; border-radius: 5px;">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
+        <!-- Formularz Title Note -->
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0;">Notatka z tytułem</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="title">
+                <div style="margin-bottom: 15px;">
+                    {{ title_form.title }}
+                </div>
+                <div style="margin-bottom: 15px;">
+                    {{ title_form.content }}
+                </div>
+                <button type="submit" class="button" style="width: 100%;">Dodaj</button>
+            </form>
+        </div>
+        
+        <!-- Formularz Content Note -->
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0;">Notatka z treścią</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="content">
+                <div style="margin-bottom: 15px;">
+                    {{ content_form.content }}
+                </div>
+                <button type="submit" class="button" style="width: 100%;">Dodaj</button>
+            </form>
+        </div>
+        
+        <!-- Formularz Data Note -->
+        <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            <h3 style="margin-top: 0;">Notatka z danymi JSON</h3>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="form_type" value="data">
+                <div style="margin-bottom: 15px;">
+                    {{ data_form.data }}
+                </div>
+                <button type="submit" class="button" style="width: 100%;">Dodaj</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    font-family: inherit;
+}
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+</style>
+{% endblock %}
+

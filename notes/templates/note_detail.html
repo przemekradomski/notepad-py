@@ -1,0 +1,93 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Szczegóły notatki{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'notes/css/style_notes.css' %}">
+<style>
+    .note-detail {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto;
+    }
+    .note-detail h1 {
+        color: #333;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+    }
+    .note-content {
+        font-size: 16px;
+        line-height: 1.6;
+        color: #555;
+        margin: 20px 0;
+        white-space: pre-wrap;
+    }
+    .note-meta {
+        color: #666;
+        font-size: 14px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    .note-type-badge {
+        display: inline-block;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .note-type-badge.title { background: #667eea; color: white; }
+    .note-type-badge.content { background: #11998e; color: white; }
+    .note-type-badge.data { background: #f5576c; color: white; }
+    .json-data {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        font-family: 'Courier New', monospace;
+        overflow-x: auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="note-detail">
+    {% if note %}
+        <span class="note-type-badge {{ note_type }}">
+            {% if note_type == 'title' %}Notatka z tytułem
+            {% elif note_type == 'content' %}Notatka z treścią
+            {% elif note_type == 'data' %}Notatka z danymi JSON
+            {% endif %}
+        </span>
+        
+        {% if note_type == 'title' %}
+            <h1>{{ note.title }}</h1>
+            <div class="note-content">{{ note.content }}</div>
+        {% elif note_type == 'content' %}
+            <h1>Notatka</h1>
+            <div class="note-content">{{ note.content }}</div>
+        {% elif note_type == 'data' %}
+            <h1>Dane JSON</h1>
+            <div class="json-data">{{ note.data|safe }}</div>
+        {% endif %}
+        
+        <div class="note-meta">
+            <p><strong>Utworzono:</strong> {{ note.created_at|date:"d.m.Y H:i" }}</p>
+            <p><strong>Ostatnia modyfikacja:</strong> {{ note.updated_at|date:"d.m.Y H:i" }}</p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <a href="{% url 'notepad_dashboard' %}" class="button">← Wróć do dashboardu</a>
+        </div>
+    {% else %}
+        <h1>Błąd</h1>
+        <p>Notatka nie została znaleziona.</p>
+        <a href="{% url 'notepad_dashboard' %}" class="button">← Wróć do dashboardu</a>
+    {% endif %}
+</div>
+{% endblock %}
