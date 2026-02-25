@@ -35,7 +35,15 @@
                 <div class="note-title">{{ item.note }}</div>
                 <div class="note-date">Utworzono: {{ item.note.created_at|date:"d.m.Y H:i" }}</div>
             </div>
-            <a href="{% url 'note_detail' item.note.id %}" class="button">Zobacz</a>
+            <div>
+                <a href="{% url 'note_detail' item.note.id %}" class="button">Zobacz</a>
+                <form method="post" action="{% url 'note_delete' item.note.id %}" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="button" style="background: #e3342f;">
+                        Usuń
+                    </button>
+                </form>
+            </div>
         </div>
         {% endfor %}
     {% else %}

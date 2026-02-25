@@ -21,5 +21,6 @@ from notes import views
 urlpatterns = [
     path('', views.notepad_dashboard, name='notepad_dashboard'),
     path('note/<int:note_id>/', views.note_detail, name='note_detail'),
+    path('note/<int:note_id>/delete/', views.delete_note, name='note_delete'),
     path('admin/', admin.site.urls),
 ]

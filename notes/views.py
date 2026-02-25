@@ -80,6 +80,28 @@ def note_detail(request, note_id):
     return render(request, 'note_detail.html', context)
 
 
+def delete_note(request, note_id):
+    """Usuwa pojedynczą notatkę z cookies"""
+    # Dla bezpieczeństwa usuwamy notatkę tylko przez POST
+    if request.method != 'POST':
+        return redirect('note_detail', note_id=note_id)
+
+    notes = get_notes_from_cookies(request)
+    original_count = len(notes)
+    # Filtrowanie listy notatek, aby usunąć wskazaną
+    notes = [n for n in notes if str(n.get('id')) != str(note_id)]
+
+    response = redirect('notepad_dashboard')
+
+    if len(notes) == original_count:
+        messages.error(request, 'Notatka nie została znaleziona.')
+    else:
+        messages.success(request, 'Notatka została usunięta.')
+
+    save_notes_to_cookies(response, notes)
+    return response
+
+
 def notepad_dashboard(request):
     notes = get_notes_from_cookies(request)
     response = None

@@ -81,8 +81,14 @@
             <p><strong>Ostatnia modyfikacja:</strong> {{ note.updated_at|date:"d.m.Y H:i" }}</p>
         </div>
         
-        <div style="margin-top: 30px;">
+        <div style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap;">
             <a href="{% url 'notepad_dashboard' %}" class="button">← Wróć do dashboardu</a>
+            <form method="post" action="{% url 'note_delete' note.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="button" style="background: #e3342f;" onclick="return confirm('Na pewno usunąć tę notatkę?');">
+                    Usuń notatkę
+                </button>
+            </form>
         </div>
     {% else %}
         <h1>Błąd</h1>
